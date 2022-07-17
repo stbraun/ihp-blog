@@ -10,8 +10,8 @@ import Web.Types
 import Web.Routes
 import Application.Helper.View
 
-defaultLayout :: Html -> Html
-defaultLayout inner = H.docTypeHtml ! A.lang "en" $ [hsx|
+defaultLayout :: UTCTime -> Html -> Html
+defaultLayout currentTime inner = H.docTypeHtml ! A.lang "en" $ [hsx|
 <head>
     {metaTags}
 
@@ -21,12 +21,20 @@ defaultLayout inner = H.docTypeHtml ! A.lang "en" $ [hsx|
     <title>{pageTitleOrDefault "App"}</title>
 </head>
 <body>
-    <div class="container mt-4">
+    <main>
         {renderFlashMessages}
         {inner}
-    </div>
+    </main>
+    {footer currentTime}
 </body>
 |]
+
+
+footer :: UTCTime -> Html
+footer currentTime = [hsx|
+    @ All Rights Reserved {formatTime defaultTimeLocale "%Y" currentTime}
+|]
+
 
 -- The 'assetPath' function used below appends a `?v=SOME_VERSION` to the static assets in production
 -- This is useful to avoid users having old CSS and JS files in their browser cache once a new version is deployed
